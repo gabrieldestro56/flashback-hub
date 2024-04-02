@@ -20,6 +20,8 @@ import { encryptPassword } from './criptografia/criptografar.js'
 // Verificação de usuario já existente
 export const isUserRegistered = async ({User}) => {
   try {
+    console.log("verificando usuario no banco")
+    console.log(User)
     const Usuario = await BancoUsuarios.findOne({ User: User })
     return Usuario ? true : false
   } catch(e) {
