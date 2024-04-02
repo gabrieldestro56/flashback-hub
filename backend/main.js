@@ -24,6 +24,7 @@ import { encryptPassword } from './criptografia/criptografar.js'
 // Verificação de usuario já existente
 export const isUserRegistered = async ({User}) => {
   try {
+    console.log("vou acessar o banco")
     const Usuario = await BancoUsuarios.findOne({ User: User })
     return Usuario ? true : false
   } catch(e) {
@@ -49,10 +50,7 @@ export const RealizarCadastro = (req, res, data) => {
 
     // Registrando usuário
     const Registrar = async () => {
-      
-      // Conectando ao banco de dados
-      await client.connect()
-
+      console.log("estou na função registrar")
       // Verificação de integridade do request
       if ( !integrityCheck(data, Integridade.Usuario) ) {
         return {type: "error", message: "Ocorreu uma falha de integridade dos dados."}
