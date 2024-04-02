@@ -3,11 +3,15 @@ import { config } from 'dotenv';
 config()
 
 // Banco de Dados
-import { MongoClient } from 'mongodb';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
-const url = process.env.MONGODB_API_KEY
+const url = process.env.MONGODB_API_KEY;
 
-const client = new MongoClient(url, { connectTimeoutMS: 30000 }, { keepAlive: 1})
+const client = new MongoClient(url, {serverApi: {
+  version: ServerApiVersion.v1,
+  strict: true,
+  deprecationErrors: true,
+}})
 
 const BancoGeral = client.db("AlguemConhece")
 const BancoUsuarios = BancoGeral.collection("Usuarios")
@@ -43,51 +47,54 @@ export const isUserApprovalPending = async ({User}) => {
 export const RealizarCadastro = (req, res, data) => {
     data = JSON.parse(data)
 
-      // Registrando usuário
-      const Registrar = async () => {
+    // Registrando usuário
+    const Registrar = async () => {
+      
+      // Conectando ao banco de dados
+      await client.connect()
 
-        // Verificação de integridade do request
-        if ( !integrityCheck(data, Integridade.Usuario) ) {
-          return {type: "error", message: "Ocorreu uma falha de integridade dos dados."}
-        }
-
-        // Verificação se usuário já existe no banco
-        if ( await isUserRegistered(data) ) {
-          return {type: "error", message: "Esse usuário já foi cadastrado!"}
-        }
-
-        // Verificação se usuário já está pendente no banco
-        if ( await isUserApprovalPending(data) ) {
-          return {type: "error", message: "O processo deste usuário já está em andamento, favor aguardar!"}
-        }
-
-        // Criptografia da senha
-        const SenhaCriptografada = encryptPassword(data.Password)
-
-        // Realiza o cadastro no banco de cadastros pedentes 
-        try {
-          await BancoUsuariosPendentes.insertOne(
-            {
-              ...data,
-              ["Password"]: SenhaCriptografada, 
-            }
-          )
-        } catch(e) {
-          console.log(e)
-          return {type: "error", message: e}
-        }
-
-        return {type: "success"}
-
+      // Verificação de integridade do request
+      if ( !integrityCheck(data, Integridade.Usuario) ) {
+        return {type: "error", message: "Ocorreu uma falha de integridade dos dados."}
       }
 
-      // Executando a função e retornando resposta
-      Registrar()
-      .then( ( returnValue ) => {
-        res.send(
-          {...returnValue}
+      // Verificação se usuário já existe no banco
+      if ( await isUserRegistered(data) ) {
+        return {type: "error", message: "Esse usuário já foi cadastrado!"}
+      }
+
+      // Verificação se usuário já está pendente no banco
+      if ( await isUserApprovalPending(data) ) {
+        return {type: "error", message: "O processo deste usuário já está em andamento, favor aguardar!"}
+      }
+
+      // Criptografia da senha
+      const SenhaCriptografada = encryptPassword(data.Password)
+
+      // Realiza o cadastro no banco de cadastros pedentes 
+      try {
+        await BancoUsuariosPendentes.insertOne(
+          {
+            ...data,
+            ["Password"]: SenhaCriptografada, 
+          }
         )
-      } )
+      } catch(e) {
+        console.log(e)
+        return {type: "error", message: e}
+      }
+
+      return {type: "success"}
+
+    }
+
+    // Executando a função e retornando resposta
+    Registrar()
+    .then( ( returnValue ) => {
+      res.send(
+        {...returnValue}
+      )
+    } )
 }
 
 
