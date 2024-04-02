@@ -18,9 +18,9 @@ export default function Cadastro() {
     })
 
     const [error, setError] = useState(false)
+    const [disabled, setDisabled] = useState(false)
 
     const getFormattingForTextType = (text, type) => {
-      console.log(text, type)
       return (
         type == "CPF" 
         // Formatação para CPF
@@ -84,8 +84,12 @@ export default function Cadastro() {
 
     const handleEnviarCadastro = () => {
 
+      // Desabilita o botão
+      setDisabled(true)
+
       // Sanitização do form
       if ( !validateForm() ) {
+        setDisabled(false)
         return false
       }
 
@@ -109,6 +113,7 @@ export default function Cadastro() {
           }
           
           setError(response.message)
+          setDisabled(false)
 
         } )
 
@@ -147,7 +152,7 @@ export default function Cadastro() {
         <input className={styles.input} onChange={handleChange} name="Password" type="password" placeholder="Senha" value={credentials.Password}></input>
         <input className={styles.input} onChange={handleChange} name="PasswordMatch" type="password" placeholder="Confirme sua Senha" value={credentials.PasswordMatch}></input>
         
-        <button className={styles.button} onClick={handleEnviarCadastro}>Enviar Cadastro</button>
+        <button className={ disabled ? styles.buttonDisabled : styles.button } onClick={handleEnviarCadastro}>Enviar Cadastro</button>
 
         </div>
 
