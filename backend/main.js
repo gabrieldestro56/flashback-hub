@@ -7,7 +7,7 @@ import { MongoClient } from 'mongodb';
 
 const url = process.env.MONGODB_API_KEY
 
-const client = new MongoClient(url)
+const client = new MongoClient(url, { connectTimeoutMS: 30000 }, { keepAlive: 1})
 
 const BancoGeral = client.db("AlguemConhece")
 const BancoUsuarios = BancoGeral.collection("Usuarios")
