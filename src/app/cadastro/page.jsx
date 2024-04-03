@@ -33,7 +33,7 @@ export default function Cadastro() {
     const validateForm = () => {
 
       // Verifica o CPF/CNPJ
-      if (!credentials.User || credentials.User === "__.___.___/____-__" || credentials.User === "___.___.___-__") {
+      if (!credentials.User || credentials.User.includes("_")) {
         setError(`Insira um ${credentials.Identification} valido.`)
         return false
       }
@@ -41,6 +41,12 @@ export default function Cadastro() {
       // Verifica o nome
       if (!credentials.Name) {
         setError("Informe o seu nome.")
+        return false
+      }
+
+      // Verifica o telefone
+      if (!credentials.Phone || credentials.Phone.includes("_")) {
+        setError("Informe um telefone válido.")
         return false
       }
 
@@ -147,6 +153,7 @@ export default function Cadastro() {
         </div>
 
         <InputMask className={styles.input} mask={ credentials.Identification == "CPF" ? "999.999.999-99" : "99.999.999/9999-99" } onChange={handleChange} name="User" type="text" placeholder={credentials.Identification} value={credentials.User}></InputMask>
+        <InputMask className={styles.input} mask={ "+55 (99) 99999-9999" } onChange={handleChange} name="Phone" type="text" placeholder="Telefone" value={credentials.Phone} />
         <input className={styles.input} onChange={handleChange} name="Name" type="text" placeholder="Nome" value={credentials.Name}></input>
         <input className={styles.input} onChange={handleChange} name="Email" type="text" placeholder="E-mail" value={credentials.Email}></input>
         <input className={styles.input} onChange={handleChange} name="Password" type="password" placeholder="Senha" value={credentials.Password}></input>
