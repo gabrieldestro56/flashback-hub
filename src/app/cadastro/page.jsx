@@ -69,7 +69,7 @@ export default function Cadastro() {
       const html = {
         1: () => {
           return(
-          <div>
+          <div className={styles.form2}>
             <div className={styles.horizontalForm}>
               <select className={styles.select} name="AccountType" value={credentials.AccountType} onChange={handleChange}>
               <option value="Fornecedor">Fornecedor</option>
