@@ -14,70 +14,141 @@ export default function Cadastro() {
 
     const [credentials, setCredentials] = useState({ 
         Identification: "CNPJ",
-        AccountType: "Cliente", 
+        AccountType: "Fornecedor", 
     })
+
+    const [status, setStatus] = useState(1)
+    const [passwordVisible, setPasswordVisible] = useState(false)
 
     const [error, setError] = useState(false)
     const [disabled, setDisabled] = useState(false)
 
-    const getFormattingForTextType = (text, type) => {
-      return (
-        type == "CPF" 
-        // Formatação para CPF
-        ? text.replace(/\D/g, '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') 
-        // Formatação para CNPJ
-        : text.replace(/\D/g, '').replace(/^(\d{2})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1/$2').replace(/(\d{4})(\d)/, '$1-$2') 
-      )  
+    const steps = {
+      1: {
+        title: "VAMOS COMEÇAR SEU CADASTRO!",
+        subtitle: "Nos informe o tipo de cadastro e a identificação que você irá utilizar.",
+      },
+      2: {
+        title: "CONTE-NOS SOBRE VOCÊ",
+        subtitle: "Mais algumas informações sobre sua conta."
+      },
+      3: {
+        title: "SEU CONTATO",
+        subtitle: "Como podemos entrar em contato com você?"
+      },
+      4: {
+        title: "SEU ACESSO",
+        subtitle: "Vamos criar uma senha para seu acesso."
+      },
+      5: {
+        title: "REVISAR OS DADOS",
+        subtitle: "Verifique se todos os dados estão corretos antes de enviar." 
+      }
     }
 
-    const validateForm = () => {
-
-      // Verifica o CPF/CNPJ
-      if (!credentials.User || credentials.User.includes("_")) {
-        setError(`Insira um ${credentials.Identification} valido.`)
-        return false
-      }
-
-      // Verifica o nome
-      if (!credentials.Name) {
-        setError("Informe o seu nome.")
-        return false
-      }
-
-      // Verifica o telefone
-      if (!credentials.Phone || credentials.Phone.includes("_")) {
-        setError("Informe um telefone válido.")
-        return false
-      }
-
-      // Verifica o email
-      if (!credentials.Email) {
-        setError("Informe seu e-mail.")
-        return false
-      }
-
-      // Verifica o regex do email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(credentials.Email)) {
-        setError("Informe um e-mail válido.")
-        return false
-      }
-
-      // Verifica se as senhas batem
-      if (credentials.Password !== credentials.PasswordMatch) {
-        setError("Sua senhas não coincidem.")
-        return false
-      }
-
-      // Nenhum erro encontrado :D
-      setError(false)
-      return true
-
+    const requirements = {
+      1: ["User"],
+      2: ["OwnerName", "BusinessName"],
+      3: ["Email", "Phone"],
+      4: ["Password", "PasswordMatch"],
     }
 
+    const displayInfo = {
+      "AccountType": "Tipo de Conta",
+      "Identification": "Identificação",
+      "User": "Identificador CNPJ/CPF",
+      "Phone": "Telefone de contato",
+      "Email": "E-mail de contato",
+      "BusinessName": "Nome da Empresa",
+      "OwnerName": "Nome do Representante",
+    }
+
+    const displayInfoOrder = ["AccountType", "Identification", "User", "BusinessName", "OwnerName", "Email", "Phone"]
+
+    const getHtmlForStep = () => {
+      const html = {
+        1: () => {
+          return(
+          <div>
+            <div className={styles.horizontalForm}>
+              <select className={styles.select} name="AccountType" value={credentials.AccountType} onChange={handleChange}>
+              <option value="Fornecedor">Fornecedor</option>
+              <option value="Cliente">Cliente</option>
+              </select>
+              { credentials.AccountType == "Fornecedor" ? 
+                <select className={styles.select} name="Identification" value={credentials.Identification} disabled={credentials.AccountType == "Cliente"} onChange={handleChange}>
+                    <option value="CNPJ">CNPJ</option>
+                    <option value="CPF">CPF</option>
+                </select>
+                : 
+                <Alert variant="filled" severity="info">
+                  Clientes podem apenas usar CNPJ
+                </Alert>
+                }  
+            </div>  
+
+            <InputMask className={styles.input} 
+            mask={ credentials.Identification == "CPF" ? 
+            "999.999.999-99" : "99.999.999/9999-99" } 
+            onChange={handleChange} name="User" type="text" 
+            placeholder={`Digite seu ${credentials.Identification}`} 
+            value={credentials.User}/>
+
+          </div> 
+          )
+        },
+        2: () => {
+          return (
+            <div className={styles.form2}>
+              <div className={styles.form2}>
+                <input type="text" onChange={handleChange} name={"OwnerName"} className={styles.input} placeholder={"Nome do representante"} value={credentials.OwnerName} />
+                <input type="text" onChange={handleChange} name={"BusinessName"} className={styles.input} placeholder={"Nome da empresa"} value={credentials.BusinessName} />
+              </div>
+            </div>
+          )
+        },
+        3: () => {
+          return (
+            <div className={styles.form2}>
+              <div className={styles.form2}>
+                <InputMask className={styles.input} mask={ "+55 (99) 99999-9999" } onChange={handleChange} name="Phone" type="text" placeholder="Telefone" value={credentials.Phone} />
+                <input type="text" onChange={handleChange} name={"Email"} className={styles.input} placeholder={"Email"} value={credentials.Email ? credentials.Email : ""} />
+              </div>
+            </div>
+          )
+        },
+        4: () => { return( 
+          <div className={styles.form2}>
+            <input className={styles.input} onChange={handleChange} name="Password" type={passwordVisible ? "text" : "password"} placeholder="Senha" value={credentials.Password}></input>
+            <input className={styles.input} onChange={handleChange} name="PasswordMatch" type={passwordVisible ? "text" : "password"} placeholder="Confirme sua Senha" value={credentials.PasswordMatch}></input>
+            <label className={styles.subtitle}>
+              <input type="checkbox" onChange={handlePasswordVisible} value={passwordVisible}/>
+              Ver Senha
+            </label>
+          </div>
+         )
+        },
+        5: () => { return (
+          <div className={styles.form2}>
+            { displayInfoOrder.map( (key) => {
+
+              return ( 
+                <div key={key} className={styles.form3}>
+                  <span key={key} className={styles.aboveTitle}>{displayInfo[key]}</span>
+                  <span key={key} className={styles.belowTitle}>{ credentials[key] }</span>
+                </div>
+              )
+
+            } ) }
+          </div>
+        )}
+      }
+      return html[status]()
+    }
 
     const handleChange = ({target}) => {
         const { name, value } = target;
+        console.log(credentials)
         setCredentials( (previousCredentials) => (
         {
           ...previousCredentials,
@@ -88,16 +159,16 @@ export default function Cadastro() {
       )
     }
 
+    const handlePasswordVisible = () => {
+      setPasswordVisible( (prev) => {
+        return !prev
+      } )
+    }
+
     const handleEnviarCadastro = () => {
 
       // Desabilita o botão
       setDisabled(true)
-
-      // Sanitização do form
-      if ( !validateForm() ) {
-        setDisabled(false)
-        return false
-      }
 
       // Remove excessos do credentials
       const Credentials = {...credentials}
@@ -127,6 +198,58 @@ export default function Cadastro() {
 
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const isFormFilledForStep = () => {
+      for (const element of requirements[status]) {
+
+        if (element == "Email" && !emailRegex.test(credentials.Email)) {
+          setError("O email inserido é inválido.")
+          return false
+        }
+
+        if (!credentials[element] || credentials[element].includes("_")) {
+          setError("Alguns dados não foram preenchidos corretamente.")
+          return false
+        }
+
+        if (element == "Password" && credentials.Password !== credentials.PasswordMatch) {
+          setError("Suas senhas não coincidem.")
+          return false
+        }
+        
+      }
+      return true
+    }
+
+    const handleProximo = () => {
+      
+      if (status === 5) {
+        handleEnviarCadastro()
+        return
+      }
+
+      if (!isFormFilledForStep()) {
+        return false
+      }
+
+      setStatus( (prev) => {
+        return prev + 1
+      } )
+
+      setError(false)
+
+    }
+
+    const handleVoltar = () => {
+      if (status == 1) {
+        return
+      }
+      setStatus( (prev) => {
+        return prev - 1
+      })
+    }
+
     return (
       
       <div className={styles.mainContainer}>
@@ -136,37 +259,22 @@ export default function Cadastro() {
         </Alert>
 
         <div className={styles.form}>
-
-        <div className={ `${ credentials.AccountType == "Fornecedor" ? styles.horizontalForm : styles.horizontalFormHidden }` }>
-          <select className={styles.select} name="AccountType" value={credentials.AccountType} onChange={handleChange}>
-                <option value="Fornecedor">Fornecedor</option>
-                <option value="Cliente">Cliente</option>
-            </select>
-
-          { credentials.AccountType == "Fornecedor" ? 
-          <select className={styles.select} name="Identification" value={credentials.Identification} disabled={credentials.AccountType == "Cliente"} onChange={handleChange}>
-              <option value="CNPJ">CNPJ</option>
-              <option value="CPF">CPF</option>
-          </select>
-          : null }
-
-        </div>
-
-        <InputMask className={styles.input} mask={ credentials.Identification == "CPF" ? "999.999.999-99" : "99.999.999/9999-99" } onChange={handleChange} name="User" type="text" placeholder={credentials.Identification} value={credentials.User}></InputMask>
-        <InputMask className={styles.input} mask={ "+55 (99) 99999-9999" } onChange={handleChange} name="Phone" type="text" placeholder="Telefone" value={credentials.Phone} />
-        <input className={styles.input} onChange={handleChange} name="Name" type="text" placeholder="Nome" value={credentials.Name}></input>
-        <input className={styles.input} onChange={handleChange} name="Email" type="text" placeholder="E-mail" value={credentials.Email}></input>
-        <input className={styles.input} onChange={handleChange} name="Password" type="password" placeholder="Senha" value={credentials.Password}></input>
-        <input className={styles.input} onChange={handleChange} name="PasswordMatch" type="password" placeholder="Confirme sua Senha" value={credentials.PasswordMatch}></input>
         
-        <button className={ disabled ? styles.buttonDisabled : styles.button } onClick={handleEnviarCadastro}>Enviar Cadastro</button>
+          <span className={styles.title}> { steps[status].title } </span>
+          <span className={styles.subtitle}>{ steps[status].subtitle }</span>
+
+          {getHtmlForStep()}
+
+          <div className={styles.horizontalForm2}>
+            { status > 1 ? <button className={ styles.button } onClick={handleVoltar}>Voltar</button> : null }
+            <button className={disabled ? styles.buttonDisabled : styles.button} onClick={handleProximo}>{ status !== 5 ? "Proximo" : "Enviar"}</button>
+          </div>
+
+          { error ? <Alert variant="filled" severity="error">
+            { error }
+          </Alert> : null }
 
         </div>
-
-        { error ? <Alert variant="filled" severity="error">
-            { error }
-        </Alert> : null }
-
       </div>
     );
 

@@ -3,18 +3,20 @@ export const Integridade = {
     Usuario: [
       "AccountType",
       "Identification",
-      "Name",
+      "BusinessName",
+      "OwnerName",
       "Email",
-      "Password"
+      "Phone",
+      "Password",
     ]
 }
 
 // Verificação de integridade da data dos requests
 export const integrityCheck = (received, expected) => {
-  expected.forEach( (field) => {
+  for (const field of expected) {
     if (!received[field]) {
       return false
     }
-  } )
+  }
   return true
 }
