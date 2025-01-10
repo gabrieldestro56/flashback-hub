@@ -1,5 +1,11 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import Head from 'next/head'; 
+import { NotificationProvider } from '@/frontend/context/NotificationContext';
+
+import { NotificationList } from '@/frontend/components/NotificationList'
+import { TopBar } from '@/frontend/components/TopBar';
+
+import './globals.css'
 
 export const metadata = {
   title: 'Next.js',
@@ -11,7 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      
+        <body>
+          <NotificationProvider>
+            <TopBar title="Hub Administrativo" logo="/main/Flashback.png"></TopBar>
+            <NotificationList/>
+            {children}
+          </NotificationProvider>
+        </body>
     </html>
   )
 }

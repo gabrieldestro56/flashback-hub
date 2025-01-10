@@ -1,0 +1,2 @@
+1. Verificar se um token é válido ao entrar na página
+2. Retornar username e array de permissões ao realizar login 

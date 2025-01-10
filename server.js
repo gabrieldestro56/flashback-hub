@@ -13,17 +13,62 @@ const app = next.default({ dev });
 const handle = app.getRequestHandler();
 
 // Importa os protocolos da main
-import * as backend from './backend/main.js'
+import * as hub from './src/backend/hub.js'
+
+// Cache de tokens
+let Tokens = {}
+
+// Funções de auxílio
+const getUnixTime = () => {
+  return Math.floor( Date.now() / 1000 );
+}
+
+const isAuthenticated = async(req, res, data) => {
+
+  data = JSON.parse(data)
+
+  // Verifica se o token já está no cache e não excede 10 minutos
+  if (data.token in Tokens && (getUnixTime() - Tokens[data.token].timestamp) <= 600 ) {
+    res.status(200).json({message: "Token válido", permissions: Tokens[data.token].permissions})
+    return true
+  }
+
+  const Usuario = await hub.UsuarioAutenticado(req, res, data)
+
+  // Caso token seja inválido, retorna 401
+  if (!Usuario) {
+    res.status(401).json({message: "Token inválido."})
+    return false
+  }
+
+  // Caso token seja válido, adiciona ao cache
+  Tokens[Usuario.password] = {
+    timestamp: getUnixTime(),
+    permissions: Usuario.permissions
+  }
+
+  res.status(200).json({message: "Token válido", permissions: Usuario.permissions})
+
+}
 
 // Preparação do servidor
 app.prepare().then(() => {
 
   const server = express();
 
-  // API do Servidor
-  server.post('/v1/cadastrar', (req, res) => {
-    req.on('data', (data) => backend.RealizarCadastro(req, res, data) )
+  // Autenticação
+  server.post('/v1/login', (req, res) => {
+    req.on('data', (data) => hub.RealizarLogin(req, res, data))
   });
+
+  server.post('/v1/auth', (req, res) => {
+    req.on('data', (data) => isAuthenticated(req, res, data))
+  })
+
+  // Gerenciamento de Usuarios
+  server.post('/v1/get-users', (req, res) => {
+    req.on('data', (data) => hub.RetornarUsuarios(req, res, data))
+  })
 
   // Outros casos, renderizar com next
   server.all('*', (req, res) => {
