@@ -2,8 +2,8 @@
 import Head from 'next/head'; 
 import { NotificationProvider } from '@/frontend/context/NotificationContext';
 
-import { NotificationList } from '@/frontend/components/NotificationList'
-import { TopBar } from '@/frontend/components/TopBar';
+import { NotificationList } from '@/frontend/components/Notification/NotificationList'
+import { TopBar } from '@/frontend/components/TopBar/TopBar';
 
 import './globals.css'
 

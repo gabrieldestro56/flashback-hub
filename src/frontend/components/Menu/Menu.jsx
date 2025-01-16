@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useNotification } from '../context/NotificationContext';
+import { useNotification } from '../../context/NotificationContext';
 import styles from './Menu.module.css';
 
 import { Home } from '@mui/icons-material'

@@ -1,0 +1,48 @@
+.adicionarButton {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    align-items: center;
+
+    background-color: #6d1279;
+
+    height: 40px;
+    width: auto;
+
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 5px;
+    padding-right: 20px;
+    gap: 15px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+
+}
+
+.adicionarButton:hover {
+    background-color: rgb(85, 2, 85);
+}
+
+.icon {
+    height: 35px;
+    aspect-ratio: 1/1;
+    pointer-events: none;
+}
+
+.text {
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    overflow-wrap: normal;
+    pointer-events: none;
+}
+
+.vertical_flex {
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}

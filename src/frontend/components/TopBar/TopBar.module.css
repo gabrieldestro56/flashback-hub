@@ -37,7 +37,7 @@
   background-color: white; /* Optional: Add a background if the logo needs contrast */
 }
 
-@media (max-height: 600px) {
+@media (max-height: 500px) {
   .container {
     display: none;
   }

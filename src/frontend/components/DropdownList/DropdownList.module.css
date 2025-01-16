@@ -28,9 +28,10 @@
     color: white;
     padding: 10px;
 
-    width: 500px;
-
+    width: 600px;
 }
+
+
 
 .title {
     font-size: 1.25rem;
@@ -69,19 +70,26 @@
 
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: auto;
+
+    align-items: left;
+    justify-content: left;
+
     gap: 10px;
+
+
 }
 
 .dropdown_open {
     height: 200px;
+    padding: 15px;
 }
 
 .checkbox_container {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     gap: 10px;
 }
 
@@ -97,10 +105,20 @@
 }
 
 .checkbox_on {
+    
+    aspect-ratio: 1/1;
+    width: 20px;
+    height: 20px;
+
     background-color: green;
 }
 
 .checkbox_off {
+
+    aspect-ratio: 1/1;
+    width: 20px;
+    height: 20px;
+
     background-color: red;
 }
 
@@ -118,4 +136,24 @@
     cursor: pointer;
     aspect-ratio: 1/1;
     width: 15px;
+}
+
+@media (max-width: 600px) {
+    .user {
+        width: 250px;
+    }
+
+    .dropdown {
+        display: grid;
+        
+        grid-template-columns: 100%;
+        grid-template-rows: auto;
+    
+        align-items: left;
+        justify-content: left;
+    }
+
+    .dropdown_open {
+        height: auto;
+    }
 }

@@ -8,8 +8,8 @@ import Cookies from 'js-cookie';
 
 import { useNotification } from '@/frontend/context/NotificationContext';
 import { Authenticate, hasPermission } from '@/frontend/autenticacao/autenticacao';
-import { Menu, MenuItem } from '@/frontend/components/Menu';
-import { Loading } from '@/frontend/components/Loading';
+import { Menu, MenuItem } from '@/frontend/components/Menu/Menu';
+import { Loading } from '@/frontend/components/Loading/Loading';
 
 const Hub = () => {
 
@@ -43,7 +43,7 @@ const Hub = () => {
         </div>}
 
         { isLoaded &&
-        <div className={styles.container}>
+        <div className={styles.container_row}>
            <label className={styles.title}>{`Bem-vindo, ${Cookies.get("username")}!`}</label>
             <Menu>
                 { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem name={"Cartão Fácil"} icon={"cartao_facil"}/>}

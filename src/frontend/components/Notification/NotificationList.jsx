@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useNotification } from '../context/NotificationContext';
+import { useNotification } from '../../context/NotificationContext';
 import styles from './NotificationList.module.css'; // Import the CSS module
 
 export const NotificationList = () => {
