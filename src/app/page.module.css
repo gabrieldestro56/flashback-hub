@@ -66,12 +66,16 @@
   font-weight: 600;
 }
 
+.button_disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .button:hover {
   background-color: #521062; /* Darker shade of #6d1279 */
 }
 
-/* Add some responsiveness */
-@media (max-width: 600px) {
+@media (max-height: 600px) {
   .loginForm {
     padding: 20px;
   }

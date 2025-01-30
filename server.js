@@ -70,6 +70,33 @@ app.prepare().then(() => {
     req.on('data', (data) => hub.RetornarUsuarios(req, res, data))
   })
 
+  server.post('/v1/create-user', (req, res) => {
+    req.on('data', (data) => {
+      if ( hub.AdicionarUsuario(req, res, data) ) {
+        // Necessário limpar cache se a operação for sucedida
+        Tokens = {}
+      }
+    })
+  })
+
+  server.post('/v1/delete-user', (req, res) => {
+    req.on('data', (data) => {
+      if ( hub.RemoverUsuario(req, res, data) ) {
+          // Necessário limpar cache se a operação for sucedida
+          Tokens = {}
+      }
+    })
+  })
+
+  server.post('/v1/set-users-permissions', (req, res) => {
+    req.on('data', (data) => {
+     if ( hub.AtualizarUsuarios(req, res, data) ) {
+      // Necessário limpar cache se a operação for sucedida
+      Tokens = {}
+     }
+    })
+  })
+
   // Outros casos, renderizar com next
   server.all('*', (req, res) => {
     return handle(req, res);

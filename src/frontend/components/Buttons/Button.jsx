@@ -12,10 +12,10 @@ export const ButtonContainer = ({ children }) => {
 
 }
 
-export const Button = ({icon, title, onClick}) => {
+export const Button = ({icon, title, onClick, isDisabled}) => {
 
     return (
-        <div className={styles.adicionarButton} onClick={onClick}>
+        <div className={`${ isDisabled ? styles.disabled_button : styles.button}`} onClick={onClick}>
             <img className={styles.icon} src={`/svg/${icon}.svg`} alt={icon}></img>
             <label className={styles.text}>{title}</label>
         </div>

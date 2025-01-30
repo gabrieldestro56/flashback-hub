@@ -22,11 +22,25 @@ export default function HomePage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const [isProcessing, setIsProcessing] = useState(false);
+
     useEffect( () => {
       isLoggedIn(router)
     }, [])
 
     const handleLogin = async () => {
+
+        if (isProcessing) {
+            return;
+        }
+
+        setIsProcessing(true)
+
+        notificationManager.addNotification({
+            message: "Realizando login...",
+            type: "info",
+        });
+
         const response = await fetch('/v1/login', {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -52,7 +66,10 @@ export default function HomePage() {
           Cookies.set("permissions", data.permissions)
           setTimeout(() => {
             router.push('/hub')
+            setIsProcessing(false)
           }, 500);
+        } else {
+            setIsProcessing(false)
         }
     };
 
@@ -84,7 +101,7 @@ export default function HomePage() {
                         required
                     />
                 </div>
-                <button type="submit" onClick={handleLogin} className={styles.button}>
+                <button type="submit" onClick={handleLogin} className={`${styles.button} ${ isProcessing && styles.button_disabled }`}>
                     Login
                 </button>
             </form>

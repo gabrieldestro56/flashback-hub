@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNotification } from '../../context/NotificationContext';
-import styles from './NotificationList.module.css'; // Import the CSS module
+import styles from './NotificationList.module.css'; 
 
 export const NotificationList = () => {
   const { notifications, notificationManager } = useNotification();
@@ -12,7 +12,7 @@ export const NotificationList = () => {
     setHiddenNotifications((prev) => [...prev, id]);
     setTimeout(() => {
       notificationManager.removeNotification(id);
-    }, 500); // Match this with the CSS transition duration
+    }, 500); 
   };
 
   return (
