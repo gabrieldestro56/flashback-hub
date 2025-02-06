@@ -14,6 +14,7 @@ const handle = app.getRequestHandler();
 
 // Importa os protocolos da main
 import * as hub from './src/backend/hub.js'
+import * as cartao_facil from './src/backend/cartao-facil.js'
 
 // Cache de tokens
 let Tokens = {}
@@ -94,6 +95,25 @@ app.prepare().then(() => {
       // Necessário limpar cache se a operação for sucedida
       Tokens = {}
      }
+    })
+  })
+
+  // Gerenciamento Cartão Facil
+  server.post('/v1/create-payment', (req, res) => {
+    req.on('data', (data) => {
+      cartao_facil.criarMetodoPagamento(req, res, data)
+    })
+  })
+
+  server.post('/v1/get-payment-methods', (req, res) => {
+    req.on('data', (data) => {
+      cartao_facil.retornarMetodosPagamento(req, res, data)
+    })
+  })
+
+  server.post('/v1/update-payment-methods', (req, res) => {
+    req.on('data', (data) => {
+      cartao_facil.atualizarMetodosPagamento(req, res, data)
     })
   })
 

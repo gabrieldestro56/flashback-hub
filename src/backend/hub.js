@@ -1,66 +1,16 @@
-import { encryptPassword } from './criptografia/criptografar.js'
+import { 
+  encryptPassword 
+} from './criptografia/criptografar.js';
 
-// Configura o environment
-import { config } from 'dotenv';
-config()
-
-// Banco de Dados
-import { MongoClient, ServerApiVersion } from 'mongodb';
-
-const url = process.env.MONGODB_API_KEY;
-
-const client = new MongoClient(url, {serverApi: {
-  version: ServerApiVersion.v1,
-  strict: true,
-  deprecationErrors: true,
-}})
-
-const BancoGeral = client.db("flashbackhub")
-const BancoUsuarios = BancoGeral.collection("users")
-
-
-// Funções Auxiliares
-
-// Verificação de senha para login
-const isPasswordCorrect = async(user, password) => {
-  try {
-    const Usuario = await BancoUsuarios.findOne({user: user, password: password})
-    return Usuario ? true : false 
-  } catch(e) { 
-    console.log(e)
-    return e
-  }
-}
-
-const getUserByToken = async(token) => {
-  try {
-    const Usuario = await BancoUsuarios.findOne({password: token})
-    return Usuario || null
-  } catch(e) { 
-    console.log(e)
-    return e
-  }
-}
-
-const getUserByName = async(name) => {
-  try {
-    const Usuario = await BancoUsuarios.findOne({user: name})
-    return Usuario || null
-  } catch(e) { 
-    console.log(e)
-    return e
-  }
-}
-
-const hasPermission = async(token, permission) => {
-  try {
-    const Usuario = await BancoUsuarios.findOne({password: token})
-    return Usuario ? Usuario.permissions.includes(permission) : null
-  } catch(e) { 
-    console.log(e)
-    return e
-  }
-}
+import { 
+  isPasswordCorrect, 
+  getUserByName, 
+  getUserByToken, 
+  hasPermission, 
+  insertUser, 
+  updateUser, 
+  deleteUser 
+} from './mongodb.js';
 
 // Funções interface
 export const RealizarLogin = async (req, res, data) => {
@@ -105,7 +55,8 @@ export const RetornarUsuarios = async (req, res, data) => {
 
   try {
     
-    const Usuarios = await BancoUsuarios.find({}).toArray()
+    let Usuarios = await getAllUsers()
+
     const UsuariosPermissions = {}
 
     Usuarios.forEach( (user) => {
@@ -141,7 +92,6 @@ export const AdicionarUsuario = async (req, res, data) => {
   }
 
   // Verifica se esse usuário já não está cadastrado no banco
-  console.log(await getUserByName(data.user.Usuario))
   if ( await getUserByName(data.user.Usuario) ) {
     res.status(400)
     res.json({message: `Usuário "${data.user.Usuario}" já existe, utilize outro nome de usuário.`})
@@ -153,16 +103,15 @@ export const AdicionarUsuario = async (req, res, data) => {
 
   try {
 
-    const Usuario = await BancoUsuarios.insertOne({ user: data.user.Usuario, password: hashPassword, permissions: [] })
+    const Result = await insertUser({ user: data.user.Usuario, password: hashPassword, permissions: [] })
 
-    console.log(Usuario)
-    if (Usuario.acknowledged && Usuario.insertedId) {
+    if (Result) {
       res.status(200)
       res.json({message: `Usuário ${data.user.Usuario} criado com sucesso!`})
       return true; 
     } else {
       res.status(500)
-      res.json({message: "Erro interno do servidor."})
+      res.json({message: "Erro interno do servidor.", error: Result})
       return;
     }
 
@@ -208,9 +157,9 @@ export const RemoverUsuario = async (req, res, data) => {
     }
 
     // Deleta o usuário do banco
-    const Resultado = await BancoUsuarios.deleteOne({user: data.user})
+    const Resultado = await deleteUser({user: data.user})
 
-    if (Resultado.acknowledged) {
+    if (Resultado) {
       res.status(200).json({message: `O usuário ${data.user} foi removido com sucesso!`})
       return true;
     } else {
@@ -240,9 +189,9 @@ export const AtualizarUsuarios = async (req, res, data) => {
   // Aplica as alterações no banco
   try {
     Object.keys(data.update).forEach( async (user, index) => {
-      const result = await BancoUsuarios.updateOne( {user: user}, { $set: { permissions: data.update[user] } } )
+      const result = await updateUser( {user: user}, { $set: { permissions: data.update[user] } } )
 
-      if (result === null || result === undefined || result.modifiedCount == 0) {
+      if (!result) {
         Erros.count++;
         Erros.users.push(user)
       }

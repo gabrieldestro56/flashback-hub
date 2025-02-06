@@ -144,13 +144,15 @@ const Users = () => {
         }
 
         // Faz o toggle da permissão no usuario alvo
-        setUsers( {
-            ...users,
-            [user]: users[user].includes(permission) ? 
-                    // Remove a permissão caso estiver incluida
-                    users[user].filter((perm) => perm !== permission ) :
-                    // Adiciona a permissão caso contrário
-                    [...users[user], permission],
+        setUsers( (users) => {
+            return {
+              ...users,
+              [user]: users[user].includes(permission)
+                ? // Remove a permissão caso estiver incluida
+                  users[user].filter((perm) => perm !== permission)
+                : // Adiciona a permissão caso contrário
+                  [...users[user], permission],
+            };
         } )    
     }
 

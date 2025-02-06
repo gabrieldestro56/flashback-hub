@@ -26,6 +26,17 @@ export const DropdownItem = ({ title, onClick, onDelete, StateControl, name, isR
     )
 }
 
+export const PaymentMethod = ({title}) => {
+
+    return (
+        <div
+        className={styles.paymentContainer}>
+            
+        </div>
+    )
+
+}
+
 export const Permission = ({ permission, title, tooltip, user, isOn, onToggle }) => {
     return (
 

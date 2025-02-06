@@ -23,16 +23,8 @@ const Hub = () => {
         setIsLoaded(true)
     }, [] )
 
-    const HandleLogout = () => {
-
-        // Remove os cookies do site
-        Cookies.remove("flashback_auth")
-        Cookies.remove("permissions")
-        Cookies.remove("username")
-
-        // Manda o usuário para o login
-        router.push("/")
-
+    const HandleVoltar = () => {
+        router.push("/hub")
     }
 
     return (
@@ -44,13 +36,14 @@ const Hub = () => {
 
         { isLoaded &&
         <div className={styles.container_row}>
-           <label className={styles.title}>{`Bem-vindo, ${Cookies.get("username")}!`}</label>
+           <label className={styles.title}>Cartão Facil</label>
             <Menu>
-                { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem name={"Cartão Fácil"} icon={"cartao_facil"} onClick={ () => router.push("/cartao-facil") }/>}
-                { (hasPermission("admin") || hasPermission("ceo_software")) && <MenuItem name={"CEP Software"} icon={"delivery"}/>}
-                { (hasPermission("admin") || hasPermission("fones")) && <MenuItem name={"Agenda Telefônica"} icon={"fones"}/>}
-                { hasPermission("admin") && <MenuItem name={"Gerenciar Usuários"} icon={"usuarios"} onClick={() => router.push("/users")}/>}
-                <MenuItem name={"Trocar de Usuário"} icon={"logout"} onClick={HandleLogout}></MenuItem>
+                { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem onClick={() => router.push('/cartao-facil/criar-lancamento')} name={"Fazer Lançamento"} icon={"novolancamento"}/>}
+                { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem name={"Resultado do Dia"} icon={"lancamentodia"}/>}
+                { (hasPermission("admin") || hasPermission("cartao_facil_vermelho")) && <MenuItem name={"Cartão Vermelho"} icon={"cartaovermelho"}/>}
+                { (hasPermission("admin") || hasPermission("cartao_facil_relatorio")) && <MenuItem onClick={() => router.push('/cartao-facil/metodos-pagamento')} name={"Métodos de Pagamento"} icon={"metodopagamento"}/>}
+                { (hasPermission("admin") || hasPermission("cartao_facil_relatorio")) && <MenuItem name={"Relatório"} icon={"relatorio"}/>}
+                <MenuItem name={"Voltar"} icon={"logout"} onClick={HandleVoltar}></MenuItem>
             </Menu>
         </div> }
         </div>

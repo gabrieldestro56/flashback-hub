@@ -1,0 +1,23 @@
+.title {
+    position: absolute;
+    font-size: 4rem;
+    width: 100%;
+    top: clamp(200px, 20%, 300px);
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 100px;
+    text-align: center;
+    font-family: 'Audiowide', sans-serif;
+}
+
+.container {
+    background-color: #f9f3fb;
+    width: 100vw;
+    height: 100vh;
+}
+
+.container_row {
+    margin-top: 50px;
+    background-color: #f9f3fb;
+    gap: 30px
+}
