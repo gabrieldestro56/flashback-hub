@@ -9,7 +9,8 @@ import {
   hasPermission, 
   insertUser, 
   updateUser, 
-  deleteUser 
+  deleteUser,
+  getAllUsers
 } from './mongodb.js';
 
 // Funções interface

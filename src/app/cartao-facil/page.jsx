@@ -36,7 +36,7 @@ const Hub = () => {
 
         { isLoaded &&
         <div className={styles.container_row}>
-           <label className={styles.title}>Cartão Facil</label>
+           <label className={styles.title}>Cartão Fácil</label>
             <Menu>
                 { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem onClick={() => router.push('/cartao-facil/criar-lancamento')} name={"Fazer Lançamento"} icon={"novolancamento"}/>}
                 { (hasPermission("admin") || hasPermission("cartao_facil")) && <MenuItem name={"Resultado do Dia"} icon={"lancamentodia"}/>}

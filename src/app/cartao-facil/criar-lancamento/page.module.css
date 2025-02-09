@@ -1,17 +1,28 @@
 .vertical_container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+
     align-items: center;
     background-color: #f9f3fb;
 
     height: 50vh;
     width: 50vw;
 
+    margin-top: 50px;
+
     top: 0;
     left: 0;
 
     gap: 20px;
+}
+
+.lancamento_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    margin-bottom: 25px;
 }
 
 .horizontal_container {
@@ -34,12 +45,163 @@
 
 }
 
+.date_selector {
+    
+    color: black;
+
+    padding: 5px;
+
+    width: 250px;
+
+    transition: 0.25s;
+
+    font-family: sans-serif;
+
+}
+
+.date_selector:hover {
+    color: white;
+    background-color: #6d1279;
+}
+
 .title {
     font-size: 1.25rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    font-weight: bold;
+    font-style: italic;
 }
 
 .icon {
     aspect-ratio: 1/1;
     width: 30px;
+}
+
+
+
+.lancamento-container {
+    
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+
+    padding: 25px;
+    gap: 25px;
+
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+
+}
+
+.lancamento-header {
+    display: flex;
+    flex-direction: row;
+    
+    justify-content: space-between;
+    align-items: center;
+    gap: 100px;
+
+    border-bottom: 2px solid #6d1279;
+}
+
+.lancamento-pagamentos {
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+
+    min-height: auto;
+    max-height: 200px;
+
+    border-bottom: 2px solid #6d1279;
+    border-top: 2px solid #6d1279;
+}
+
+.lancamento-pagamentos > div:nth-child(odd) {
+    background-color: #f9f3fb;
+}
+
+.lancamento-pagamentos > div:nth-child(even) {
+    background-color: #e1d6e5;
+}
+
+
+.lancamento-individual {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.lancamento-individual a {
+    font-family: sans-serif;
+    padding: 5px;
+}
+
+.lancamento-individual input {
+    background-color: transparent;
+    border: none;
+    transition: 0.25s;
+}
+
+.lancamento-individual input:hover {
+    background-color: purple;
+    color: white;
+}
+
+.lancamento-despesas {
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+    height: clamp(auto, auto, 200px);
+
+    border-bottom: 2px solid #6d1279;
+    border-top: 2px solid #6d1279;
+
+    padding: 15px;
+    gap: 5px;
+
+    background-color: #e1d6e5;
+}
+
+
+
+.lancamento-despesas-value {
+    display: flex;
+    flex-direction: row;
+}
+
+.lancamento-despesas-value input {
+    background-color: transparent;
+    border: none;
+    transition: 0.25s;
+}
+
+.lancamento-despesas-value input:hover {
+    background-color: purple;
+    color: white;
+}
+
+.lancamento-despesas-value a {
+    font-family: sans-serif;
+    padding: 5px;
+    font-weight: bold;
+}
+
+.lancamento-despesas-descricao {
+    border: none;
+    border-radius: 10px;
+    padding: 5px;
+    transition: 0.25s;
+}
+
+.lancamento-despesas-descricao:focus {
+    border: 1px solid purple;
+    outline: none;
 }
